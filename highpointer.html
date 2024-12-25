@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click the Box Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: #f0f0f0;
+      border: 2px solid #000;
+    }
+
+    #score {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Click the Box Game</h1>
+  <div id="score">Score: 0</div>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let score = 0;
+    const box = {
+      x: Math.random() * (canvas.width - 50),
+      y: Math.random() * (canvas.height - 50),
+      size: 50,
+      dx: 4,
+      dy: 4,
+    };
+
+    canvas.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      if (
+        clickX > box.x &&
+        clickX < box.x + box.size &&
+        clickY > box.y &&
+        clickY < box.y + box.size
+      ) {
+        score++;
+        document.getElementById("score").textContent = `Score: ${score}`;
+        box.x = Math.random() * (canvas.width - box.size);
+        box.y = Math.random() * (canvas.height - box.size);
+      }
+    });
+
+    function drawBox() {
+      ctx.fillStyle = "blue";
+      ctx.fillRect(box.x, box.y, box.size, box.size);
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      box.x += box.dx;
+      box.y += box.dy;
+
+      if (box.x + box.size > canvas.width || box.x < 0) {
+        box.dx *= -1;
+      }
+      if (box.y + box.size > canvas.height || box.y < 0) {
+        box.dy *= -1;
+      }
+
+      drawBox();
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+</body>
+</html>
